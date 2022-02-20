@@ -5,15 +5,8 @@ const res = require('express/lib/response')
 //Crear servidor aplicacion de express
 const app = express()
 
-//GET
-app.get('/', (req, res) => {
-    res.json({
-        ok: true,
-        msg: 'todo ok',
-        uid: '1234'
-    })
-})
-
+//rutas
+app.use('/api/auth', require('./routes/auth'))
 
 //Port
 app.listen(3000, () => {
