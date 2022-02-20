@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+require('dotenv').config()
 
 
 //Crear servidor aplicacion de express
@@ -15,6 +16,6 @@ app.use(express.json())
 app.use('/api/auth', require('./routes/auth'))
 
 //Port
-app.listen(3000, () => {
-    console.log(`Servidor corriendo en puerto ${3000}`)
+app.listen(process.env.PORT, () => {
+    console.log(`Servidor corriendo en puerto ${process.env.PORT}`)
 })
