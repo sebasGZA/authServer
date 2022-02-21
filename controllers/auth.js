@@ -1,7 +1,9 @@
 const { response } = require('express')
+var ObjectId = require('mongoose').Types.ObjectId;
 const Usuario = require('../models/Usuario')
 const bcrypt = require('bcryptjs')
-const { gererarJWT } = require('../helpers/jwt')
+const { gererarJWT } = require('../helpers/jwt');
+const { db } = require('../models/Usuario');
 
 
 const crearUsuario = async(req, res = response) => {
@@ -36,6 +38,7 @@ const crearUsuario = async(req, res = response) => {
             ok: true,
             uid: dbUser.id,
             name,
+            email,
             token
         })
 
@@ -56,7 +59,6 @@ const loginUsuario = async(req, res = response) => {
     const { email, password } = req.body
 
     try {
-        console.log(email)
         const dbUser = await Usuario.findOne({ email })
         if (!dbUser) {
             return res.status(400).json({
@@ -83,6 +85,7 @@ const loginUsuario = async(req, res = response) => {
             ok: true,
             name: dbUser.name,
             uid: dbUser.id,
+            email,
             token: token
         })
 
@@ -96,14 +99,17 @@ const loginUsuario = async(req, res = response) => {
 }
 
 const revalidarToken = async(req, res = response) => {
-    const { uid, name } = req
+    const { uid } = req
 
-    const token = await gererarJWT(uid, name)
+    const dbUser = await Usuario.findById(uid)
+
+    const token = await gererarJWT(uid, dbUser.name)
     return res.json({
         ok: true,
         uid,
-        name,
-        token
+        name: dbUser.name,
+        email: dbUser.email,
+        token,
     })
 }
 
